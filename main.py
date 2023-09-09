@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, make_response
 
 
 app = Flask(__name__)
@@ -16,9 +16,17 @@ def admin():
     else:
         return 'Work in progress'
 
-@app.route('/admin/login')
+@app.route('/admin/login', methods=['POST', 'GET'])
 def admin_login():
-    return render_template('admin/login.html')
+    if request.method == 'GET':
+        return render_template('admin/login.html')
+    elif request.method == 'POST':
+        if request.form.get('password') == 'cheese':
+            res = make_response( redirect('/') )
+            res.set_cookie('key', 'Have a cookie!', max_age=63072000)
+            return res
+        else:
+            return render_template('admin/login.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
