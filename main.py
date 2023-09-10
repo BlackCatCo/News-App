@@ -7,14 +7,20 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-
+@app.route('/post')
+def post():
+    key = request.cookies.get('key')
+    if key == None:
+        return redirect('/')
+    else:
+        return render_template('admin/post.html')
 @app.route('/admin')
 def admin():
     key = request.cookies.get('key')
     if key == None:
         return redirect('/admin/login')
     else:
-        return 'Work in progress'
+        return redirect('/post')
 
 @app.route('/admin/login', methods=['POST', 'GET'])
 def admin_login():
@@ -26,7 +32,7 @@ def admin_login():
             res.set_cookie('key', 'Have a cookie!', max_age=63072000)
             return res
         else:
-            return render_template('admin/login.html')
+            return redirect('/post')
 
 if __name__ == '__main__':
     app.run(debug=True)
